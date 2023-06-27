@@ -1,0 +1,45 @@
+name: CRISPRlnc
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=2_gnu
+  - bzip2=1.0.8=h7f98852_4
+  - ca-certificates=2023.5.7=hbcca054_0
+  - icu=72.1=hcb278e6_0
+  - jansson=2.14=h0b41bf4_1
+  - ld_impl_linux-64=2.40=h41732ed_0
+  - libffi=3.4.2=h7f98852_5
+  - libgcc-ng=13.1.0=he5830b7_0
+  - libgomp=13.1.0=he5830b7_0
+  - libiconv=1.17=h166bdaf_0
+  - libnsl=2.0.0=h7f98852_0
+  - libsqlite=3.42.0=h2797004_0
+  - libstdcxx-ng=13.1.0=hfd8a6a1_0
+  - libuuid=2.38.1=h0b41bf4_0
+  - libxml2=2.10.4=hfdac1af_0
+  - libzlib=1.2.13=h166bdaf_4
+  - ncurses=6.3=h27087fc_1
+  - openssl=3.1.1=hd590300_1
+  - pcre=8.45=h9c3ff4c_0
+  - perl=5.32.1=2_h7f98852_perl5
+  - pip=23.1.2=pyhd8ed1ab_0
+  - python=3.8.16=he550d4f_1_cpython
+  - python_abi=3.8=3_cp38
+  - readline=8.2=h8228510_1
+  - setuptools=67.7.2=pyhd8ed1ab_0
+  - tk=8.6.12=h27826a3_0
+  - uwsgi=2.0.21=py38h291d704_3
+  - viennarna=2.5.0=py38pl5321h3b68952_2
+  - wheel=0.40.0=pyhd8ed1ab_0
+  - xz=5.2.6=h166bdaf_0
+  - yaml=0.2.5=h7f98852_2
+  - pip:
+      - joblib==1.2.0
+      - numpy==1.24.3
+      - regex==2023.6.3
+      - scikit-learn==1.2.2
+      - scipy==1.10.1
+      - threadpoolctl==3.1.0
