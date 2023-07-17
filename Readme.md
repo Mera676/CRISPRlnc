@@ -2,7 +2,7 @@
 
 ## Preparation
 
-Our tools are developed based on python in the Linux environment, so please make sure you can meet this requirement before using it.
+Our tools are developed based on python in the Linux environment, so please make sure you can meet this requirement before using it. And please download our genome annotation folder through http://predict.crisprlnc.cc/Annotationdownload and http://predict.crisprlnc.cc/offtargetdownload, and put these two folders in the CRSPRlnc directory. You can also use our online design web tool at http://predict.crisprlnc.cc/
 
 ### Additional python packages:
 
