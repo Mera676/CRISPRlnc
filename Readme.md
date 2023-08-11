@@ -30,7 +30,7 @@ scipy  (version:1.7.3)
 
 sklearn(version:0.0)
 
-ViennaRNA(version:2.5.0)
+ViennaRNA(version:2.6.2)
 
 You can directly import the required packages into your current python environment with the following command:
 
