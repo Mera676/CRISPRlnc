@@ -3,7 +3,7 @@ import os, sys
 import pickle
 import regex
 import numpy as np
-# import RNA
+import RNA
 import json
 import re
 
@@ -492,7 +492,6 @@ class PamMismatchException(Exception):
     pass
 
 
-# 返回一个字典，键是sgRNA序列（23bp）,值是脱靶点的列表
 def process_offtarget_seq(sgrna_seq: str, offtarget_res: str):
     res = sgrna_seq
     cur_idx = 0
@@ -586,8 +585,6 @@ def comoff(seqs):
         print("首个请求失败:", res)
         return -1
 
-
-# 返回一个字典，键是sgRNA序列（23bp）,值是脱靶点的列表
 def getoffsituation(seqs):
     i = 0
     list_length = 20
@@ -701,35 +698,7 @@ def getlocation(chrom, strand, startsite, endsite, location_dict):
     return result_list[0]
 
 
-# #返回脱靶得分
-# def geoff_score(offsitiation):
-#     offscore = {}
-#     score_list = []
-#     for target in offsitiation:
-#         score = 0
-#         off_list = offsitiation[target]
-#         for off in off_list:
-#             mis = count_letters(off[2])
-#             if mis == 0:
-#                 score = score + 0.6
-#             if mis == 1:
-#                 score = score + 0.3
-#             if mis ==2:
-#                 score = score + 0.15
-#             if mis >2:
-#                 score = score + 0.05
-#         offscore[target] = score
-#         score_list.append(score)
-#         score_nor = normalization(score_list)
-#         i = 0
-#         for target in offscore:
-#             offscore[target] = score_nor[i]
-#             i +=1
-#     return offscore
 
-
-
-#离线版本返回脱靶得分
 def geoff_score(offsitiation):
     offscore = {}
     score_list = []
@@ -755,13 +724,6 @@ def geoff_score(offsitiation):
             i +=1
     return offscore
 
-def normalization(x):
-    """"
-    归一化到区间{0,1]
-    返回副本
-    """
-    _range = np.max(x) - np.min(x)
-    return (x - np.min(x)) / _range
 
 
 def count_letters(string):
