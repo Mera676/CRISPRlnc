@@ -3,12 +3,12 @@ import os, sys
 import pickle
 import file_handle
 
-SG_FA = sys.argv[1] # sgRNA文件，输入的系数1。
-NCRNA_FA = 'Annotation/ncrna.fa'  # 非编码基因文件，输入系数2。
-PROMOTER_FILE = 'Annotation/ncRNA_withPromoter.fa'  # 非编码带有启动子序列的序列文件，输入系数3。
-LOCATION_DICT = 'dict/location_dict.pkl'  # 位置区域文件，输入系数4.
-CHR_BED_DICT = 'dict/chr_dict.pkl'  # 染色体文件，输入系数5
-genome_fa = sys.argv[2] # 用于脱靶的基因组序列文件
+SG_FA = sys.argv[1] 
+NCRNA_FA = 'Annotation/ncrna.fa' 
+PROMOTER_FILE = 'Annotation/ncRNA_withPromoter.fa'  
+LOCATION_DICT = 'dict/location_dict.pkl'  
+CHR_BED_DICT = 'dict/chr_dict.pkl' 
+genome_fa = sys.argv[2] 
 distance = int(sys.argv[3])
 needoff = int(sys.argv[4])
 device = int(sys.argv[5])
@@ -24,14 +24,14 @@ if __name__ == '__main__':
     chr_dict = pickle.load(chr_read)
     location_dict = pickle.load(location_read)
 
-    #脱靶输入文件
+    
     sgRNAfile = open('sgRNA_input/sgRNA_input.txt', 'w')
     sgRNAfile.write(genome_fa + '\n')
     # sgRNAfile.write(sys.path[0]+'/fasta/human_hg38.fa'+'\n')
     # second line
     sgRNAfile.write('NNNNNNNNNNNNNNNNNNNNNRG' + '\n')
 
-    # 输出文件
+ 
     f = open('CRISPRlnc_CRISPRko_result.tsv', 'w')  # create the csv writer
     head = 'transcript\tpair id\tpair score\tsgRNA1 sequence\tsgRNA1 PAM\tsgRNA1 GC content\tsgRNA1 position\tsgRNA 1 strand\tsgRNA1 Cutting effectiveness\tsgRNA1 region\tsgRNA1 location\tsgRNA1 off score\tsgRNA2 sequence\tsgRNA2 PAM\tsgRNA2 GC content\tsgRNA2 position\tsgRNA2 strand\tsgRNA2 Cutting effectiveness\tsgRNA2 region\tsgRNA2 location\tsgRNA2 off score\n'
     f.write(head)
@@ -44,7 +44,7 @@ if __name__ == '__main__':
         sg_wholeseq = oldsg_dict[gene]['sequence'].replace('\n', '')
         input[sequence_num] = []
 #         result[sequence_num] = {}
-        # 先来匹配整段基因
+      
         whole_dict = fa_dict
         transcript_list = []
         for transcript in whole_dict:
@@ -52,10 +52,10 @@ if __name__ == '__main__':
             if matchseq != -1:
                 transcript_list.append(transcript)
 
-        # 如果输入的序列匹配不到基因
+   
         if transcript_list == []:
             sg_dict = file_handle.Designsg(sg_wholeseq)
-            #将得到的sgRNA写入文件，计算脱靶
+         
             for gene in sg_dict:
                 for key1 in sg_dict[gene]:
                     sgRNA = str(key1[0][0:20]) + 'NNN'
@@ -76,7 +76,7 @@ if __name__ == '__main__':
                 for key1 in sg_dict:
                     # sg_list.append(key1)
                     seqs.append((key1[0:20], key1[20:23]))
-                # 计算出脱靶情况和脱靶得分
+              
                 try:
                     fh = open("off-target/offtarget_output.txt", "r")
                     offsituation = file_handle.offline_off('off-target/offtarget_output.txt')
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 #                 offsituation = file_handle.offline_off('offtarget_result/output.txt')
                 offscore_list = file_handle.geoff_score(offsituation)
 
-            # 计算pair
+            
             pair_dict[sequence_num] = {}
             pair_count = 1
             new_sg_dict = list(sg_dict.values())
@@ -127,7 +127,7 @@ if __name__ == '__main__':
                     region = 'NA'
                     location = 'NA'
                     transcript = 'NA'
-                    if needoff == 0:  # 不需要脱靶的情况
+                    if needoff == 0:  
                         offscore = 'NA'
                         sgRNA_off = []
                         all_score = predict_score * 0.875
@@ -137,7 +137,7 @@ if __name__ == '__main__':
                             sgRNA_off, all_score)
                         result[sequence_num][start] = sgRNA
 
-                    if needoff == 1:  # 需要脱靶的情况
+                    if needoff == 1: 
                         offscore = offscore_list[sg[0]]
                         sgRNA_off = offsituation[sg[0]]
                         all_score = (predict_score - offscore) * 0.875
@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
         else:
             for transcript in transcript_list:
-                # 定义返回的第二个字典，匹配上的输入序列的所有转录本信息
+                
                 transcript_info = (transcript, promoterfa_dict[transcript]['gene'], promoterfa_dict[transcript]['type'],
                                    promoterfa_dict[transcript]['symbol'], promoterfa_dict[transcript]['chr_name'],
                                    promoterfa_dict[transcript]['start'], promoterfa_dict[transcript]['end'],
@@ -160,7 +160,7 @@ if __name__ == '__main__':
                 result[transcript] = {}
                 chr_name = promoterfa_dict[transcript]['chr_name']
                 sg_dict = file_handle.Designsg(promoterfa_dict[transcript]['sequence'])  # 从启动子区域开始设计sgRNA
-                # 将得到的sgRNA写入文件，计算脱靶
+             
                 for gene in sg_dict:
                     for key1 in sg_dict[gene]:
                         sgRNA = str(key1[0][0:20]) + 'NNN'
@@ -189,7 +189,7 @@ if __name__ == '__main__':
                     for key1 in sg_dict:
                         sg_list.append(key1)
                         seqs.append((key1[0:20], key1[20:23]))
-                    # 计算出脱靶情况和脱靶得分
+                    
                     try:
                         fh = open("off-target/offtarget_output.txt", "r")
                         offsituation = file_handle.offline_off('off-target/offtarget_output.txt')
@@ -201,7 +201,7 @@ if __name__ == '__main__':
     #                 offsituation = file_handle.offline_off('offtarget_result/output.txt')
                     offscore_list = file_handle.geoff_score(offsituation)
 
-                # 计算pair
+           
                 pair_dict[transcript] = {}
                 pair_count = 1
                 new_sg_dict = list(sg_dict.values())
@@ -235,7 +235,7 @@ if __name__ == '__main__':
                         sg_strand = sg[1][2]
                         strand = sg_strand
                         if (promoterfa_dict[transcript]['strand'] == '-') and (sg_strand == '+'):
-                            strand = '-'  # 最终相对于染色体的正负链
+                            strand = '-'  
                         if (promoterfa_dict[transcript]['strand'] == '-') and (sg_strand == '-'):
                             strand = '+'
                         sg_sequence = sg[0][0:20]
@@ -264,7 +264,7 @@ if __name__ == '__main__':
                             region_score = 0.5
 
                         if int(gene_start) - distance <= position <= int(
-                                gene_end) + distance and needoff == 0:  # 不需要脱靶的情况
+                                gene_end) + distance and needoff == 0:  
                             offscore = 'NA'
                             sgRNA_off = []
                             all_score = (region_score + predict_score) * 0.875
@@ -276,7 +276,7 @@ if __name__ == '__main__':
                             
 
                         if int(gene_start) - distance <= position <= int(
-                                gene_end) + distance and needoff == 1:  # 需要脱靶的情况
+                                gene_end) + distance and needoff == 1: 
                             offscore = offscore_list[sg[0][0:20]]
                             sgRNA_off = offsituation[sg[0][0:20]]
                             all_score = region_score + predict_score - offscore
