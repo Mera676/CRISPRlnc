@@ -2,7 +2,7 @@
 
 ## Preparation
 
-Our tools are developed based on python in the Linux environment, so please make sure you can meet this requirement before using it. And please download our genome annotation folder through http://predict.crisprlnc.cc/Annotationdownload and http://predict.crisprlnc.cc/offtargetdownload, and put these two folders in the CRSPRlnc directory. You can also use our online design web tool at http://predict.crisprlnc.cc/
+Our tools are developed based on python in the Linux environment, so please make sure you can meet this requirement before using it. Please download the annotation file from our website first（http://predict.crisprlnc.cc/）. You can also use our online design web tool at http://predict.crisprlnc.cc/ .
 
 ### Additional python packages:
 
@@ -38,22 +38,20 @@ You can directly import the required packages into your current python environme
 conda env create -f CRISPRlnc.yml
 ```
 
-
-
 ### Required file comments:
 
-First, we need the genome annotation files of the species, including the fasta sequence file of the whole genome, the gtf annotation file, and the fasta file of the non-coding gene sequence. If it is used to predict sgRNAs on **human\ Mus\Zebrafish\Drosophila melanogaster\\Paniscus\Gorilla\Macaque\Cow\Goat**  non-coding genes, **this step can be skipped**.
+Firstly, you need to prepare the sequence files of non-coding genes and gene annotation files (recommended to download from ensemble database), and we prepared the data of nine genomes as reference (download from http://predict.crisprlnc.cc/tool_download). If you need to design other genomes, please go to ensemble database to download them by yourself. The total number of files needed is:
 
-exmaple(hg38) :
+exmaple (Human) :
 
-- whole genome sequence : human_hg38.fa
-- gtf annotation file : Homo_sapiens.GRCh38.107.chr.gtf
-- non-coding gene sequence : Homo_sapiens.GRCh38.ncrna.fa
+- whole genome sequence : hg38.fa
+- gtf annotation file : Homo_sapiens.GRCh38.gtf
+- non-coding gene sequence file : Homo_sapiens.GRCh38.ncrna.fa
 
-Then, you need to extract the location of the promoter by the following shell command:
+When the above file is ready, run the following command:
 
 ```shell
-sed 's/"/\t/g' Homo_sapiens.GRCh38.107.chr.gtf | awk 'BEGIN{OFS=FS="\t"}{if($3=="transcript") {if($7=="+") {start=$4-1000; end=$4+500;} else {if($7=="-") start=$5-500; end=$5+1000; } if(start<0) start=0; print $1,start,end,$14,$10,$7;}}' >GRCh38transcript.promoter.bed
+python embeding.py non-coding_gene_sequence_file_path gtf_annotation_file_path whole_genome_sequence_file_path species_name
 ```
 
 ### Off-target tool support
@@ -70,101 +68,71 @@ We provide two versions of the sgRNA prediction tool: with off-target prediction
 
 #### no off-target prediction version:
 
-##### input file(take human as an example):
+##### input parameter(take human as an example):
 
-Annotation/Homo_sapiens.GRCh38.ncrna.fa
+sg.fa (gene sequences to be designed for sgRNAs )
 
-Annotation/GRCh38transcript.promoter.bed
+genome.fa(reference genome)
 
-sg.fa(The only file you need to change is to replace the content with the gene sequence you want to predict)
+distance (length of promoter sequence)
 
-##### If you don't need the result of off-target prediction, or you can't use Cas-OFFinder, you can use our tool directly through the following command,We prepared a total of nine genome files in our package:
+If you don't need the result of off-target prediction, or you can't use Cas-OFFinder, you can use our tool directly through the following command:
 
-###### human:
+##### CRISPRko(CPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Homo_sapiens.GRCh38.ncrna.fa Annotation/GRCh38transcript.promoter.bed sg.fa
+python CRISPRko.py sg.fa genome.fa distance 0 0
 ```
 
-###### Mus:
+##### CRISPRi(CPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Mus_musculus.GRCm39.ncrna.fa Annotation/GRCm39.transcript.promoter.bed sg.fa
+python CRISPRi.py sg.fa genome.fa distance 0 0
 ```
 
-###### Zebrafish:
+##### CRISPRko(GPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Danio_rerio.GRCz11.ncrna.fa Annotation/GRCz11.transcript.promoter.bed sg.fa
+python CRISPRko.py sg.fa genome.fa distance 0 1
 ```
 
-###### Drosophila melanogaster:
+##### CRISPRi(GPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Drosophila_melanogaster.BDGP6.32.ncrna.fa Annotation/BDGP6.transcript.promoter.bed sg.fa
+python CRISPRi.py sg.fa genome.fa distance 0 1
 ```
 
-###### Paniscus:
+#### off-target prediction version:
+
+##### input parameter(take human as an example):
+
+sg.fa (gene sequences to be designed for sgRNAs )
+
+genome.fa(reference genome)
+
+distance (length of promoter sequence)
+
+##### CRISPRko(CPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Pan_paniscus.panpan1.1.ncrna.fa Annotation/panpan1.1.transcript.promoter.bed sg.fa
+python CRISPRko.py sg.fa genome.fa distance 1 0
 ```
 
-###### Gorilla:
+##### CRISPRi(CPU):
 
-```shell
-python CRISPRlnc_nooff.py Annotation/Gorilla_gorilla.gorGor4.ncrna.fa Annotation/gorGor4.transcript.promoter.bed sg.fa
+```
+python CRISPRi.py sg.fa genome.fa distance 1 0
 ```
 
-###### Macaque:
+##### CRISPRko(GPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Macaca_mulatta.Mmul_10.ncrna.fa Annotation/Mmul_10.transcript.promoter.bed sg.fa
+python CRISPRko.py sg.fa genome.fa distance 1 1
 ```
 
-###### Cow:
+##### CRISPRi(GPU):
 
 ```shell
-python CRISPRlnc_nooff.py Annotation/Bos_taurus.ARS-UCD1.2.ncrna.fa Annotation/ARS-UCD1.2.transcript.promoter.bed sg.fa
-```
-
-###### Goat:
-
-```shell
-python CRISPRlnc_nooff.py Annotation/Capra_hircus.ARS1.ncrna.fa Annotation/ARS1.transcript.promoter.bed sg.fa
-```
-
-###### other:
-
-If you want to predict other species , please change the corresponding file location to the annotation file address of the species you need to predict, for example:
-
-```shell
-python CRISPRlnc_nooff.py ncRNA_sequence_path promoter_bedfile_path sg.fa
-```
-
-
-
-#### off-target prediction version(take human as an example):
-
-##### input file:
-
-Annotation/Homo_sapiens.GRCh38.ncrna.fa
-
-Annotation/GRCh38transcript.promoter.bed
-
-sg.fa(you need to replace the content inside with the gene sequence you want to predict)
-
-fasta/human_hg38.fa 
-
-##### Run order with off-target prediction:
-
-```shell
-python CRISPRlnc.py Annotation/Homo_sapiens.GRCh38.ncrna.fa Annotation/GRCh38transcript.promoter.bed sg.fa fasta/human_hg38.fa
-```
-
-If you want to predict species other than human, please change the corresponding file location to the annotation file address of the species you need to predict, for example:
-
-```shell
-python CRISPRlnc.py  ncRNA_sequence_path promoter_bedfile_path sg.fa whole_genome_path
+python CRISPRi.py sg.fa genome.fa distance 1 1
 ```
 
